@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - Tienda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .badge-pendiente { background-color: #f6c23e; }
+        .badge-enviado { background-color: #4e73df; }
+        .badge-entregado { background-color: #1cc88a; }
+        .badge-cancelado { background-color: #e74a3b; }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/inicio">Tienda</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/empleado/pedidos">Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/empleado/productos-mas-vendidos">Productos Más Vendidos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Gestión de Pedidos</h6>
+                <div class="dropdown no-arrow">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="filtroEstado" data-bs-toggle="dropdown" aria-expanded="false">
+                        Filtrar por Estado
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filtroEstado">
+                        <li><a class="dropdown-item" th:href="@{/empleado/pedidos}">Todos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/empleado/pedidos(estado='PENDIENTE')}">Pendientes</a></li>
+                        <li><a class="dropdown-item" th:href="@{/empleado/pedidos(estado='ENVIADO')}">Enviados</a></li>
+                        <li><a class="dropdown-item" th:href="@{/empleado/pedidos(estado='ENTREGADO')}">Entregados</a></li>
+                        <li><a class="dropdown-item" th:href="@{/empleado/pedidos(estado='CANCELADO')}">Cancelados</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="tablaPedidos">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pedido : ${pedidos}" th:onclick="'window.location.href=\'/empleado/pedido/' + ${pedido.id} + '\''">
+                                <td th:text="${pedido.id}"></td>
+                                <td th:text="${pedido.nombreCliente}"></td>
+                                <td th:text="${#dates.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(pedido.total, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                                <td>
+                                    <span th:class="${'badge ' + 
+                                        (pedido.estado == 'PENDIENTE' ? 'badge-pendiente' : 
+                                        (pedido.estado == 'ENVIADO' ? 'badge-enviado' : 
+                                        (pedido.estado == 'ENTREGADO' ? 'badge-entregado' : 'badge-cancelado')))}" 
+                                        th:text="${pedido.estado}">
+                                    </span>
+                                </td>
+                                <td>
+                                    <a th:href="@{'/empleado/pedido/' + ${pedido.id}}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${pedidos.empty}">
+                                <td colspan="6" class="text-center">No hay pedidos disponibles</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
