@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.exa.base.dao.PedidoDao;
 import com.exa.base.dao.ProductoDao;
+import com.exa.base.dao.UsuarioDao;
 import com.exa.base.model.DetallePedido;
 import com.exa.base.model.Pedido;
 import com.exa.base.model.ProductoVendido;
@@ -30,6 +31,9 @@ public class EmpleadoController {
     
     @Autowired
     private ProductoDao productoDao;
+    
+    @Autowired
+    private UsuarioDao usuarioDao;
     
     @GetMapping("/pedidos")
     public ModelAndView verPedidos(
@@ -46,6 +50,17 @@ public class EmpleadoController {
             pedidos = pedidoDao.obtenerTodosPedidos();
         }
         
+        // Obtener información adicional para cada pedido
+        for (Pedido pedido : pedidos) {
+            // Obtener el nombre del cliente para cada pedido
+            String nombreCliente = usuarioDao.obtenerNombreCliente(pedido.getIdCliente());
+            pedido.setNombreCliente(nombreCliente);
+            
+            // Obtener la dirección del cliente para cada pedido
+            String direccionCliente = usuarioDao.obtenerDireccionCliente(pedido.getIdCliente());
+            pedido.setDireccionCliente(direccionCliente);
+        }
+        
         mav.addObject("pedidos", pedidos);
         return mav;
     }
@@ -55,6 +70,15 @@ public class EmpleadoController {
         ModelAndView mav = new ModelAndView("empleado/detalle-pedido");
         
         Pedido pedido = pedidoDao.obtenerPedidoPorId(idPedido);
+        
+        // Obtener el nombre y dirección del cliente
+        String nombreCliente = usuarioDao.obtenerNombreCliente(pedido.getIdCliente());
+        pedido.setNombreCliente(nombreCliente);
+        
+        String direccionCliente = usuarioDao.obtenerDireccionCliente(pedido.getIdCliente());
+        pedido.setDireccionCliente(direccionCliente);
+        
+        // Obtener detalles del pedido
         List<DetallePedido> detalles = pedidoDao.obtenerDetallesPedido(idPedido);
         pedido.setDetalles(detalles);
         

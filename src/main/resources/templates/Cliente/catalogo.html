@@ -38,7 +38,6 @@
             padding: 15px;
             border-bottom: none;
         }
-        /* Eliminamos el estilo de card-img-top ya que no lo usamos */
         .card-body {
             padding: 20px;
         }
@@ -102,10 +101,43 @@
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
+        /* Estilo para el contador de carrito */
+        .cart-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        /* Toast para notificaciones */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1050;
+        }
+        /* Estilo para botón de cerrar sesión */
+        .btn-logout {
+            background-color: #f8f9fa;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar mejorado -->
+    <!-- Navbar actualizado: Se quitó Contacto y se agregó Cerrar Sesión -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/inicio">
@@ -122,19 +154,44 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/cliente/catalogo">Catálogo</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
-                    </li>
                 </ul>
-                <a href="/carrito" class="btn btn-light ms-3">
+                <a href="/carrito" class="btn btn-light ms-3 position-relative">
                     <i class="fas fa-shopping-cart me-1"></i>Carrito
+                    <span id="cart-count" class="cart-badge" style="display: none;">0</span>
+                </a>
+                <a href="http://localhost:8080/login" class="btn btn-logout ms-3">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
                 </a>
             </div>
         </div>
     </nav>
 
+    <!-- Contenedor para Toast/Notificaciones -->
+    <div class="toast-container">
+        <!-- Toast para agregar al carrito -->
+        <div id="toastAddToCart" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="toastMessage">Producto agregado al carrito</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h2 class="page-title">Catálogo de Productos</h2>
+        
+        <!-- Mostrar mensajes de error o éxito -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         
         <!-- Espacio para separación -->
         <div class="mb-4"></div>
@@ -149,11 +206,10 @@
                     </div>
                     
                     <div class="card-body">
-                        <!-- Ya no necesitamos el título aquí porque lo mostramos en el header -->
                         <p class="card-text" th:text="${producto.descripcion}">Descripción del producto que puede ocupar varias líneas.</p>
                         <div class="price-tag">$<span th:text="${producto.precio}">0.00</span></div>
                         
-                        <form th:action="@{/carrito/agregar}" method="post">
+                        <form th:action="@{/carrito/agregar}" method="post" class="add-to-cart-form">
                             <input type="hidden" name="idProducto" th:value="${producto.id_producto}">
                             <div class="input-group mb-3 quantity-control">
                                 <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input').stepDown()">-</button>
@@ -177,22 +233,70 @@
         </div>
     </div>
 
-    <!-- Footer simple -->
+    <!-- Footer actualizado: se quitaron los enlaces de Términos, Privacidad y Contacto -->
     <footer class="bg-white py-4 mt-5 border-top">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 text-center text-md-start">
+                <div class="col-12 text-center">
                     <p class="mb-0">&copy; 2025 Tienda de Abarrotes. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="text-decoration-none text-muted me-3">Términos</a>
-                    <a href="#" class="text-decoration-none text-muted me-3">Privacidad</a>
-                    <a href="#" class="text-decoration-none text-muted">Contacto</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Función para mostrar notificación toast
+        function showToast(message) {
+            const toastEl = document.getElementById('toastAddToCart');
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            document.getElementById('toastMessage').textContent = message;
+            toast.show();
+        }
+        
+        // Mostrar toast si hay mensaje de éxito
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMsg = document.querySelector('.alert-success');
+            if (successMsg) {
+                const message = successMsg.textContent.trim();
+                showToast(message);
+                
+                // Actualizar contador de carrito
+                fetchCartCount();
+            }
+            
+            // Interceptar formularios de agregar al carrito
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const productId = this.querySelector('[name="idProducto"]').value;
+                    const quantity = this.querySelector('[name="cantidad"]').value;
+                    
+                    // Puedes usar esto para saber qué producto se está agregando
+                    console.log(`Agregando producto ID: ${productId}, Cantidad: ${quantity}`);
+                });
+            });
+            
+            // Inicializar contador de carrito
+            fetchCartCount();
+        });
+        
+        // Función para obtener y actualizar contador de carrito
+        function fetchCartCount() {
+            fetch('/carrito/cantidad')
+                .then(response => response.text())
+                .then(count => {
+                    const cartBadge = document.getElementById('cart-count');
+                    
+                    if (parseInt(count) > 0) {
+                        cartBadge.textContent = count;
+                        cartBadge.style.display = 'flex';
+                    } else {
+                        cartBadge.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error obteniendo cantidad del carrito:', error));
+        }
+    </script>
 </body>
 </html>

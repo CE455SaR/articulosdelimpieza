@@ -46,6 +46,10 @@ public class LoginController {
                 mensajeAlert = "Las contraseñas no coinciden";
                 showMensaje = true;
                 break;
+            case "5":
+                mensajeAlert = "Solo se permiten registros como cliente";
+                showMensaje = true;
+                break;
         }
 
         modelAndView.addObject("mensajeAlert", mensajeAlert);
@@ -58,6 +62,7 @@ public class LoginController {
     public ModelAndView registrar() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("usuario", new Usuario());
+        // Mostrar solo el rol de cliente (id=1)
         modelAndView.addObject("roles", roleDao.listaRoles());
         modelAndView.setViewName("registrar");
         return modelAndView;
@@ -81,26 +86,20 @@ public class LoginController {
             }
 
             int tipoUsuario = Integer.parseInt(tipoUsuarioStr);
+            
+            // Solo permitir registro como cliente (tipoUsuario = 1)
+            if (tipoUsuario != 1) {
+                mensaje = "5";
+                return new ModelAndView("redirect:/login?mensaje=" + mensaje);
+            }
 
             if (usuarioDao.buscaEmail(usuario.getEmail())) {
                 mensaje = "3";
+                return new ModelAndView("redirect:/login?mensaje=" + mensaje);
             } else {
                 Integer[] roles = new Integer[]{tipoUsuario};
                 if (usuarioDao.grabaUsuario(usuario, roles)) {
-                    switch(tipoUsuario) {
-                        case 1:
-                            usuarioDao.crearCliente(usuario.getId());
-                            break;
-                        case 2:
-                            usuarioDao.crearProveedor(usuario.getId());
-                            break;
-                        case 3:
-                            usuarioDao.crearEmpleado(usuario.getId());
-                            break;
-                        default:
-                            mensaje = "2";
-                            return new ModelAndView("redirect:/login?mensaje=" + mensaje);
-                    }
+                    usuarioDao.crearCliente(usuario.getId());
                     mensaje = "1";
                 } else {
                     mensaje = "2";
@@ -111,6 +110,7 @@ public class LoginController {
             e.printStackTrace();
         }
 
-        return new ModelAndView("redirect:/inicio?mensaje=" + mensaje);
+        // Redirigir al login después del registro exitoso, no al inicio directamente
+        return new ModelAndView("redirect:/login?mensaje=" + mensaje);
     }
 }

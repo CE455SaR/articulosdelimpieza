@@ -24,9 +24,21 @@
     <div class="container">
         <span th:if="${showMensaje}">
             <script th:inline="javascript">
+                // Determinar el icono basado en el mensaje
+                let icon = "success";
+                const mensaje = /*[[${mensajeAlert}]]*/"";
+                
+                // Si es un mensaje de error, cambiar el icono
+                if (mensaje.toLowerCase().includes("error") || 
+                    mensaje.toLowerCase().includes("no coinciden") ||
+                    mensaje.toLowerCase().includes("ya está registrado") ||
+                    mensaje.toLowerCase().includes("solo se permiten")) {
+                    icon = "warning";
+                }
+                
                 Swal.fire({
-                    icon: "success",
-                    title: /*[[${mensajeAlert}]]*/"",
+                    icon: icon,
+                    title: mensaje,
                     showConfirmButton: false,
                     timer: 2000
                 });

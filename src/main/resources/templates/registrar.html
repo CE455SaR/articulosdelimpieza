@@ -24,7 +24,7 @@
             class="position-absolute top-50 start-50 translate-middle mt-1">
             <div class="card border-success mb-3" style="max-width: 22rem;">
                 <div class="card-header text-bg-success">
-                    <h2>Registrar</h2>
+                    <h2>Registrarse como Cliente</h2>
                 </div>
                 <div class="card-body text-success">
                     <div class="input-group mb-3">
@@ -69,16 +69,10 @@
                         </button>
                         <input type="password" class="form-control" name="confirmacion" placeholder="Confirmar contraseña" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tipo de usuario:</label>
-                        <select class="form-select" name="tipoUsuario" required>
-                            <option value="">Seleccione un tipo</option>
-                            <option th:each="rol : ${roles}" 
-                                    th:value="${rol.id}" 
-                                    th:text="${rol.nombre}">
-                            </option>
-                        </select>
-                    </div>
+                    
+                    <!-- Campo oculto para el tipo de usuario, siempre cliente (id=1) -->
+                    <input type="hidden" name="tipoUsuario" value="1">
+                    
                     <div th:if="${param.error}">
                         <p class="text-danger">Error en el registro. Por favor verifica tus datos.</p>
                     </div>

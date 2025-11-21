@@ -161,4 +161,34 @@ public class UsuarioDao {
         return null;
     }
 }
+
+/**
+ * Método para obtener el nombre del cliente por su ID de cliente
+ */
+public String obtenerNombreCliente(Integer idCliente) {
+    String sql = "SELECT u.nombre FROM usuario u " +
+                 "JOIN clientes c ON u.id_usuario = c.id_usuario " +
+                 "WHERE c.id_cliente = ?";
+    try {
+        return postgresTemplate.queryForObject(sql, String.class, idCliente);
+    } catch (Exception e) {
+        System.err.println("ERROR en obtenerNombreCliente: " + e.getMessage());
+        return "Cliente desconocido";
+    }
+}
+
+/**
+ * Método para obtener la dirección del cliente por su ID
+ */
+public String obtenerDireccionCliente(Integer idCliente) {
+    try {
+        String sql = "SELECT u.direccion FROM usuario u " +
+                     "JOIN clientes c ON u.id_usuario = c.id_usuario " +
+                     "WHERE c.id_cliente = ?";
+        return postgresTemplate.queryForObject(sql, String.class, idCliente);
+    } catch (Exception e) {
+        System.err.println("ERROR al obtener dirección del cliente: " + e.getMessage());
+        return "Dirección no disponible";
+    }
+}
 }

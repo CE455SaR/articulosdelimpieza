@@ -18,16 +18,29 @@
             padding: 60px 0;
             text-align: center;
         }
+        .btn-logout {
+            background-color: #fff;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
     </style>
 </head>
 <body class="bg-light">
-    <!-- Navbar -->
+    <!-- Navbar modificado con botón de cerrar sesión -->
     <nav class="navbar navbar-dark bg-warning shadow-sm mb-4">
         <div class="container">
             <a class="navbar-brand" th:href="@{/inicio}">Tienda de Abarrotes</a>
-            <div>
+            <div class="d-flex">
                 <a th:href="@{/proveedor/mis-productos}" class="btn btn-light me-2">Mis Productos</a>
-                <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-light">Agregar Producto</a>
+                <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-light me-2">Agregar Producto</a>
+                <a href="http://localhost:8080/login" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                </a>
             </div>
         </div>
     </nav>

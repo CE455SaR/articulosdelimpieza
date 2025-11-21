@@ -10,6 +10,8 @@ public class Pedido {
     private Double total;
     private String estado;
     private List<DetallePedido> detalles;
+    private String nombreCliente; // Nombre del cliente para mostrar en la vista
+    private String direccionCliente; // Dirección del cliente para mostrar en la vista
 
     // Constructores
     public Pedido() {
@@ -70,6 +72,22 @@ public class Pedido {
 
     public void setDetalles(List<DetallePedido> detalles) {
         this.detalles = detalles;
+    }
+    
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+    
+    public String getDireccionCliente() {
+        return direccionCliente;
+    }
+
+    public void setDireccionCliente(String direccionCliente) {
+        this.direccionCliente = direccionCliente;
     }
 
     @Override

@@ -19,8 +19,14 @@
             </div>
             <div class="card-body">
                 <!-- Mostrar mensajes de error o éxito -->
-                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 
                 <!-- Carrito vacío -->
                 <div th:if="${#maps.isEmpty(items)}" class="text-center py-5">
@@ -73,5 +79,25 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Para depuración
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateForms = document.querySelectorAll('form[action="/carrito/actualizar"]');
+            updateForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const idProducto = form.querySelector('input[name="idProducto"]').value;
+                    const cantidad = form.querySelector('input[name="cantidad"]').value;
+                    console.log('Enviando actualización: Producto ID=' + idProducto + ', Cantidad=' + cantidad);
+                });
+            });
+            
+            const deleteForms = document.querySelectorAll('form[action*="/carrito/eliminar/"]');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    console.log('Enviando eliminación: ' + form.action);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

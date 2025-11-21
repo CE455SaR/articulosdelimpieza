@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.exa.base.dao.ProductoDao;
 import com.exa.base.model.Carrito;
@@ -46,25 +44,6 @@ public class CheckoutController {
         return mav;
     }
     
-    // Añadir método para procesar el formulario de checkout
-    @PostMapping("/cliente/checkout")
-    public String procesarCheckout(
-            @ModelAttribute("carrito") Carrito carrito,
-            RedirectAttributes redirectAttributes) {
-        
-        try {
-            // Aquí iría la lógica para guardar el pedido en la base de datos
-            // Por ejemplo: crear un pedido, sus detalles, etc.
-            
-            // Limpiar el carrito después de procesar el pedido
-            carrito.limpiarCarrito();
-            
-            redirectAttributes.addFlashAttribute("success", "¡Pedido realizado con éxito!");
-            return "redirect:/cliente/mis-pedidos";  // Redirigir a la página de pedidos del cliente
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Error al procesar el pedido");
-            return "redirect:/checkout";
-        }
-    }
+    
+    
 }

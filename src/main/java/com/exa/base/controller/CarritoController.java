@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // Nuevo import
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -28,7 +28,7 @@ public class CarritoController {
     private ProductoDao productoDao;
 
     @Autowired
-    private InventarioDao inventarioDao; // Nueva dependencia
+    private InventarioDao inventarioDao;
 
     @ModelAttribute("carrito")
     public Carrito inicializarCarrito() {
@@ -43,7 +43,7 @@ public class CarritoController {
         RedirectAttributes redirectAttributes) {
         
         try {
-            System.out.println("ID Producto recibido: " + idProducto); // Log para depuración
+            System.out.println("ID Producto recibido: " + idProducto);
             System.out.println("Cantidad recibida: " + cantidad);
 
             Producto producto = productoDao.obtenerProductoPorId(idProducto);
@@ -53,12 +53,13 @@ public class CarritoController {
             }
 
             carrito.agregarItem(idProducto, cantidad);
-            System.out.println("Carrito actualizado: " + carrito.getItems()); // Log del carrito
+            System.out.println("Carrito actualizado: " + carrito.getItems());
 
-            redirectAttributes.addFlashAttribute("success", "Producto añadido al carrito");
+            // Mensaje de éxito para el usuario
+            redirectAttributes.addFlashAttribute("success", "¡Producto añadido al carrito!");
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la traza del error
-            redirectAttributes.addFlashAttribute("error", "Error al agregar el producto");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al agregar el producto: " + e.getMessage());
         }
         return "redirect:/cliente/catalogo";
     }
@@ -72,9 +73,11 @@ public class CarritoController {
 
         for (Map.Entry<Integer, Integer> entry : carrito.getItems().entrySet()) {
             Producto producto = productoDao.obtenerProductoPorId(entry.getKey());
-            int cantidad = entry.getValue();
-            itemsDetallados.put(producto, cantidad);
-            total += producto.getPrecio() * cantidad;
+            if (producto != null) {  // Verificar que el producto existe
+                int cantidad = entry.getValue();
+                itemsDetallados.put(producto, cantidad);
+                total += producto.getPrecio() * cantidad;
+            }
         }
         
         mav.addObject("items", itemsDetallados);
@@ -83,44 +86,75 @@ public class CarritoController {
     }
 
     @GetMapping("/carrito/cantidad")
-    @ResponseBody // Retorna datos, no una vista
+    @ResponseBody
     public int obtenerCantidadCarrito(@ModelAttribute("carrito") Carrito carrito) {
         return carrito.getCantidadTotal();
     }
     
     @PostMapping("/carrito/actualizar")
     public String actualizarCarrito(
-        @RequestParam int idProducto,
-        @RequestParam int cantidad,
+        @RequestParam("idProducto") int idProducto,
+        @RequestParam("cantidad") int cantidad,
         @ModelAttribute("carrito") Carrito carrito,
-        RedirectAttributes redirectAttributes) { // Añadir RedirectAttributes
+        RedirectAttributes redirectAttributes) {
         
         try {
+            System.out.println("Actualizando producto: " + idProducto + " con cantidad: " + cantidad);
+            
+            // Verificar que el producto existe antes de actualizar
+            Producto producto = productoDao.obtenerProductoPorId(idProducto);
+            if (producto == null) {
+                redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
+                return "redirect:/carrito";
+            }
+            
             if (cantidad > 0) {
                 carrito.getItems().put(idProducto, cantidad);
+                redirectAttributes.addFlashAttribute("success", "Cantidad actualizada correctamente");
             } else {
                 carrito.getItems().remove(idProducto);
+                redirectAttributes.addFlashAttribute("success", "Producto eliminado del carrito");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
         }
         return "redirect:/carrito";
     }
 
     @PostMapping("/carrito/eliminar/{idProducto}")
     public String eliminarDelCarrito(
-        @PathVariable int idProducto,
-        @ModelAttribute("carrito") Carrito carrito) {
+        @PathVariable("idProducto") int idProducto,
+        @ModelAttribute("carrito") Carrito carrito,
+        RedirectAttributes redirectAttributes) {
         
-        carrito.getItems().remove(idProducto);
+        try {
+            System.out.println("Eliminando producto: " + idProducto);
+            
+            // Verificar que el producto existe antes de eliminar
+            Producto producto = productoDao.obtenerProductoPorId(idProducto);
+            if (producto == null) {
+                redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
+                return "redirect:/carrito";
+            }
+            
+            carrito.getItems().remove(idProducto);
+            redirectAttributes.addFlashAttribute("success", "Producto eliminado del carrito");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el producto: " + e.getMessage());
+        }
+        
         return "redirect:/carrito";
     }
 
     @PostMapping("/carrito/vaciar")
-    public String vaciarCarrito(@ModelAttribute("carrito") Carrito carrito) {
+    public String vaciarCarrito(
+        @ModelAttribute("carrito") Carrito carrito,
+        RedirectAttributes redirectAttributes) {
+        
         carrito.limpiarCarrito();
+        redirectAttributes.addFlashAttribute("success", "Carrito vaciado correctamente");
         return "redirect:/carrito";
     }
-
-    // El método mostrarCheckout ha sido eliminado para evitar la ambigüedad con CheckoutController
 }

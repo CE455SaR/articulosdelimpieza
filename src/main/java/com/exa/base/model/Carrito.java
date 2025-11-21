@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class Carrito implements Serializable {
 
+    private static final long serialVersionUID = 1L; // Añadido para serialización
     private Map<Integer, Integer> items = new HashMap<>(); // ID Producto -> Cantidad
 
     // Agrega o actualiza la cantidad de un producto en el carrito
@@ -30,11 +31,11 @@ public class Carrito implements Serializable {
 
     // Getters y Setters
     public Map<Integer, Integer> getItems() {
-        return new HashMap<>(items); // Devuelve una copia para evitar modificaciones externas
+        return items; // Devolvemos la referencia directa para permitir modificaciones
     }
 
     public void setItems(Map<Integer, Integer> items) {
-        this.items = new HashMap<>(items);
+        this.items = items != null ? items : new HashMap<>();
     }
 
     // Método útil para obtener el total de productos distintos en el carrito
@@ -45,5 +46,10 @@ public class Carrito implements Serializable {
     // Método para obtener la cantidad total de artículos
     public int getCantidadTotal() {
         return items.values().stream().mapToInt(Integer::intValue).sum();
+    }
+    
+    @Override
+    public String toString() {
+        return "Carrito{items=" + items + "}";
     }
 }
