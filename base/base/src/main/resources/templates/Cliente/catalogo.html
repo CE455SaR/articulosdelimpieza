@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - BLEA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blea-primary: #00a8e8;
+            --blea-secondary: #00c9ff;
+            --blea-dark: #005f73;
+            --blea-light: #e0f7fa;
+        }
+        
+        body {
+            padding-top: 76px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-dark) 100%) !important;
+            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand-icon {
+            background: white;
+            color: var(--blea-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-dark) 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.3);
+        }
+        
+        .hero-section h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Product Cards */
+        .card {
+            transition: all 0.4s ease;
+            margin-bottom: 25px;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 168, 232, 0.15);
+            background: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 168, 232, 0.3);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: none;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--blea-dark);
+        }
+        
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--blea-primary);
+            margin-bottom: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.4);
+        }
+        
+        .btn-light {
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-light:hover {
+            transform: scale(1.05);
+        }
+        
+        .quantity-control {
+            max-width: 120px;
+            border-radius: 20px;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--blea-dark) 0%, var(--blea-primary) 100%);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1050;
+        }
+        
+        .empty-products {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-products i {
+            font-size: 5rem;
+            color: var(--blea-light);
+            margin-bottom: 20px;
+        }
+        
+        .empty-products h4 {
+            color: var(--blea-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/inicio">
+                <div class="brand-icon">
+                    <i class="fas fa-spray-can"></i>
+                </div>
+                <span>BLEA</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cliente/catalogo">Catálogo</a>
+                    </li>
+                </ul>
+                <a href="/carrito" class="btn btn-light ms-3 position-relative">
+                    <i class="fas fa-shopping-cart me-1"></i>Carrito
+                    <span id="cart-count" class="cart-badge" style="display: none;">0</span>
+                </a>
+                <a href="/logout" class="btn btn-outline-light ms-2">
+                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast-container">
+        <div id="toastAddToCart" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="toastMessage">Producto agregado al carrito</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h1><i class="fas fa-sparkles me-2"></i>¡Bienvenidos a BLEA!</h1>
+            <p class="mb-2"><i class="fas fa-home me-2"></i>Tu tienda de confianza en productos de limpieza y hogar</p>
+            <p class="lead">Calidad, buenos precios y atención cercana</p>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Products Section -->
+        <h2 class="text-center mb-4" style="color: var(--blea-dark); font-weight: 700;">
+            <i class="fas fa-tags me-2"></i>Nuestros Productos
+        </h2>
+        
+        <div class="row" th:if="${!productos.isEmpty()}">
+            <div class="col-md-4 col-lg-3" th:each="producto : ${productos}">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-spray-can me-2"></i><span th:text="${producto.nombre}">Producto</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${producto.descripcion}">Descripción</p>
+                        <div class="price-tag">$<span th:text="${producto.precio}">0.00</span></div>
+                        
+                        <form th:action="@{/carrito/agregar}" method="post" class="add-to-cart-form">
+                            <input type="hidden" name="idProducto" th:value="${producto.id_producto}">
+                            <div class="input-group mb-3 quantity-control">
+                                <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input').stepDown()">-</button>
+                                <input type="number" class="form-control text-center" name="cantidad" value="1" min="1">
+                                <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input').stepUp()">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-cart-plus me-2"></i>Agregar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-products" th:if="${productos.isEmpty()}">
+            <i class="fas fa-box-open"></i>
+            <h4>No hay productos disponibles en este momento</h4>
+            <p class="text-muted">Pronto tendremos nuevos productos para ti</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <h5><i class="fas fa-spray-can me-2"></i>BLEA - Productos de Limpieza</h5>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1"><i class="fas fa-phone me-2"></i>9221578663</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>erickmortera56@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>Iturbide 837, Mapachapa, Barrancas, Ver.</p>
+                </div>
+            </div>
+            <hr class="my-3 bg-white">
+            <p class="mb-0">&copy; 2025 BLEA. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showToast(message) {
+            const toastEl = document.getElementById('toastAddToCart');
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            document.getElementById('toastMessage').textContent = message;
+            toast.show();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMsg = document.querySelector('.alert-success');
+            if (successMsg) {
+                showToast(successMsg.textContent.trim());
+                fetchCartCount();
+            }
+            fetchCartCount();
+        });
+        
+        function fetchCartCount() {
+            fetch('/carrito/cantidad')
+                .then(response => response.text())
+                .then(count => {
+                    const cartBadge = document.getElementById('cart-count');
+                    if (parseInt(count) > 0) {
+                        cartBadge.textContent = count;
+                        cartBadge.style.display = 'flex';
+                    } else {
+                        cartBadge.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

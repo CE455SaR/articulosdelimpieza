@@ -1,0 +1,5 @@
+echo [phases.build] > nixpacks.toml
+echo cmds = [^"mvn -B clean package -DskipTests^"] >> nixpacks.toml
+echo. >> nixpacks.toml
+echo [start] >> nixpacks.toml
+echo cmd = ^"java -jar target/base-0.0.1-SNAPSHOT.war --spring.profiles.active=prod^" >> nixpacks.toml

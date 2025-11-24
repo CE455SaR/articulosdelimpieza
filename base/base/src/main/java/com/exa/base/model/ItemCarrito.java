@@ -1,0 +1,33 @@
+package com.exa.base.model;
+
+public class ItemCarrito {
+    private Producto producto;
+    private int cantidad;
+
+    public ItemCarrito(Producto producto, int cantidad) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+    }
+
+    // Getters y setters
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+    
+    // Método faltante necesario en PedidoController
+    public int getIdProducto() {
+        return this.producto != null ? this.producto.getId_producto() : 0;
+    }
+}
