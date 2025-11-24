@@ -3,90 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio - Tienda</title>
+    <title>Inicio - BLEA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --blea-primary: #00a8e8;
+            --blea-secondary: #00c9ff;
+            --blea-dark: #005f73;
+            --blea-light: #e0f7fa;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        
         .role-card {
             border-left: 4px solid;
             transition: all 0.3s;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        
         .role-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        .cliente { border-left-color: #4e73df; }
+        
+        .cliente { border-left-color: var(--blea-primary); }
         .proveedor { border-left-color: #f6c23e; }
         .empleado { border-left-color: #1cc88a; }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-dark) 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.3);
+        }
+        
+        .welcome-card h2 {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f6c23e 0%, #f4a20c 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(246, 194, 62, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-success:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(28, 200, 138, 0.4);
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 2px solid var(--blea-light);
+            font-weight: 600;
+            padding: 20px;
+        }
+        
+        /* About Section */
+        .about-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .about-section h3 {
+            color: var(--blea-primary);
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-category {
+            background: var(--blea-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--blea-primary);
+        }
+        
+        .product-category h5 {
+            color: var(--blea-dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .product-list li {
+            padding: 5px 0;
+            color: #555;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--blea-light);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 168, 232, 0.2);
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .social-btn {
+            background: linear-gradient(135deg, #1877f2 0%, #0e5fc7 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .social-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(24, 119, 242, 0.4);
+            color: white;
+        }
     </style>
 </head>
-<body class="bg-light">
+<body>
     <div class="container py-4">
         <!-- Tarjeta de Bienvenida -->
-        <div class="card mb-4 shadow">
-            <div class="card-body text-center">
-                <h2 class="text-primary">Bienvenido, <span th:text="${nombreUsuario}"></span></h2>
-                <p class="text-muted">Sistema de gestión de tienda de abarrotes</p>
+        <div class="card welcome-card mb-4 shadow">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-spray-can fa-3x mb-3"></i>
+                <h2>Bienvenido, <span th:text="${nombreUsuario}"></span></h2>
+                <p class="lead mb-2">BLEA - Productos de Limpieza y Hogar</p>
+                <p class="mb-0"><i class="fas fa-sparkles me-2"></i>Tu espacio siempre limpio, fresco y en orden</p>
             </div>
         </div>
 
-       <!-- Área Cliente -->
-<div class="card role-card cliente mb-4" th:if="${esCliente}">
-    <div class="card-header bg-white">
-        <h4 class="mb-0"><i class="fas fa-user-tag me-2"></i>Área de Clientes</h4>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <a th:href="@{/cliente/catalogo}" class="btn btn-primary w-100">
-                    <i class="fas fa-tag me-2"></i>Catálogo
-                </a>
+        <!-- Área Cliente -->
+        <div class="card role-card cliente mb-4" th:if="${esCliente}">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-user-tag me-2" style="color: var(--blea-primary);"></i>Área de Clientes</h4>
             </div>
-            <div class="col-md-4 mb-3">
-                <a th:href="@{/cliente/mis-pedidos}" class="btn btn-primary w-100">
-                    <i class="fas fa-shopping-bag me-2"></i>Mis Pedidos
-                </a>
-            </div>
-            <div class="col-md-4 mb-3">
-                <a th:href="@{/carrito}" class="btn btn-primary w-100">
-                    <i class="fas fa-shopping-cart me-2"></i>Ver Carrito
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-        
-
-      <!-- Dentro del área de proveedores -->
-<div class="card role-card proveedor mb-4" th:if="${esProveedor}">
-    <div class="card-header bg-white">
-        <h4 class="mb-0"><i class="fas fa-truck me-2"></i>Área de Proveedores</h4>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <a th:href="@{/proveedor/mis-productos}" class="btn btn-warning w-100">
-                    <i class="fas fa-boxes me-2"></i>Mis Productos
-                </a>
-            </div>
-            <div class="col-md-6 mb-3">
-                <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-warning w-100">
-                    <i class="fas fa-plus-circle me-2"></i>Agregar Producto
-                </a>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a th:href="@{/cliente/catalogo}" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-bag me-2"></i>Catálogo de Productos
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a th:href="@{/cliente/mis-pedidos}" class="btn btn-primary w-100">
+                            <i class="fas fa-clipboard-list me-2"></i>Mis Pedidos
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a th:href="@{/carrito}" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i>Ver Carrito
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+
+        <!-- Área Proveedor -->
+        <div class="card role-card proveedor mb-4" th:if="${esProveedor}">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-truck me-2" style="color: #f6c23e;"></i>Área de Proveedores</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a th:href="@{/proveedor/mis-productos}" class="btn btn-warning w-100">
+                            <i class="fas fa-boxes me-2"></i>Mis Productos
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-warning w-100">
+                            <i class="fas fa-plus-circle me-2"></i>Agregar Producto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Área Empleado -->
         <div class="card role-card empleado mb-4" th:if="${esEmpleado}">
-            <div class="card-header bg-white">
-                <h4 class="mb-0"><i class="fas fa-user-tie me-2"></i>Área de Empleados</h4>
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-user-tie me-2" style="color: #1cc88a;"></i>Área de Empleados</h4>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <a href="/empleado/pedidos" class="btn btn-success w-100">
-                            <i class="fas fa-shopping-bag me-2"></i>Gestionar Pedidos
+                            <i class="fas fa-tasks me-2"></i>Gestionar Pedidos
                         </a>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -98,7 +283,117 @@
             </div>
         </div>
 
-    <!-- Bootstrap JS -->
+        <!-- About Section -->
+        <div class="about-section">
+            <h3><i class="fas fa-info-circle"></i> ¿Quiénes somos?</h3>
+            <p>En <strong>BLEA</strong> nos dedicamos a ofrecerte los mejores productos para mantener tu hogar, negocio o espacio siempre limpio, fresco y en orden. Somos un micro negocio local comprometido con la calidad, los buenos precios y la atención cercana.</p>
+            
+            <h3 class="mt-4"><i class="fas fa-shopping-basket"></i> ¿Qué ofrecemos?</h3>
+            
+            <div class="product-category">
+                <h5><i class="fas fa-bottle-droplet me-2"></i>Productos de limpieza líquidos y detergentes</h5>
+                <ul class="product-list list-unstyled">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Jabones líquidos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Cloro</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Pinol</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Jabón para trastes</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Jabón para manos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Detergente para ropa</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Limpia pisos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Limpiador multiusos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Creolina</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Suavizante de telas</li>
+                </ul>
+            </div>
+
+            <div class="product-category">
+                <h5><i class="fas fa-star me-2"></i>Productos especiales</h5>
+                <ul class="product-list list-unstyled">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Shampoo para cabello</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Shampoo para perros</li>
+                </ul>
+            </div>
+
+            <div class="product-category">
+                <h5><i class="fas fa-broom me-2"></i>Accesorios y utensilios para limpieza</h5>
+                <ul class="product-list list-unstyled">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Escobas</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Trapeadores</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Jaladores</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Fibras</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Cubetas</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Cestas</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Jerga</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h3 class="text-center mb-4"><i class="fas fa-address-book"></i> Contáctanos</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <strong>Teléfono</strong>
+                            <p class="mb-0">9221578663</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <strong>Correo</strong>
+                            <p class="mb-0">erickmortera56@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Dirección</strong>
+                            <p class="mb-0">Iturbide 837, Mapachapa, 96904 Barrancas, Ver.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <a href="https://maps.app.goo.gl/TwKmJoCn5eDCppe57?g_st=ic" target="_blank" class="text-decoration-none">Ver en Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <div>
+                            <strong>Síguenos</strong>
+                            <br>
+                            <a href="https://www.facebook.com/profile.php?id=61584112229244" target="_blank" class="social-btn mt-2">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

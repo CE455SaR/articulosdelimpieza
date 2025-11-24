@@ -17,7 +17,6 @@ import com.exa.base.model.Pedido;
 import com.exa.base.model.Producto;
 import com.exa.base.model.ProductoVendido;
 
-
 @Repository
 public class ProductoDao {
 
@@ -29,21 +28,21 @@ public class ProductoDao {
         String sql = "SELECT * FROM productos WHERE id_producto = ?";
         return postgresTemplate.queryForObject(
             sql,
-            new BeanPropertyRowMapper<>(Producto.class), // Mapeo automático
+            new BeanPropertyRowMapper<>(Producto.class),
             idProducto
         );
     }
 
-    
     @Transactional
     public boolean insertarProducto(Producto producto) {
-        String sql = "INSERT INTO productos(nombre, descripcion, precio, id_proveedor) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO productos(nombre, descripcion, precio, id_proveedor, activo) VALUES (?, ?, ?, ?, true)";
         return postgresTemplate.update(sql, producto.getNombre(), producto.getDescripcion(), 
                 producto.getPrecio(), producto.getId_proveedor()) > 0;
     }
 
+    // ← MODIFICADO: Solo mostrar productos activos del proveedor
     public List<Producto> obtenerProductosPorProveedor(int idProveedor) {
-        String sql = "SELECT * FROM productos WHERE id_proveedor = ?";
+        String sql = "SELECT * FROM productos WHERE id_proveedor = ? AND activo = true ORDER BY id_producto";
         return postgresTemplate.query(sql, (rs, rowNum) -> {
             Producto p = new Producto();
             p.setId_producto(rs.getInt("id_producto"));
@@ -51,12 +50,14 @@ public class ProductoDao {
             p.setDescripcion(rs.getString("descripcion"));
             p.setPrecio(rs.getDouble("precio"));
             p.setId_proveedor(rs.getInt("id_proveedor"));
+            p.setActivo(rs.getBoolean("activo"));
             return p;
         }, idProveedor);
     }
 
+    // ← MODIFICADO: Solo mostrar productos activos para clientes
     public List<Producto> obtenerTodosProductos() {
-        String sql = "SELECT * FROM productos";
+        String sql = "SELECT * FROM productos WHERE activo = true ORDER BY id_producto";
         return postgresTemplate.query(sql, (rs, rowNum) -> {
             Producto p = new Producto();
             p.setId_producto(rs.getInt("id_producto"));
@@ -64,11 +65,10 @@ public class ProductoDao {
             p.setDescripcion(rs.getString("descripcion"));
             p.setPrecio(rs.getDouble("precio"));
             p.setId_proveedor(rs.getInt("id_proveedor"));
+            p.setActivo(rs.getBoolean("activo"));
             return p;
         });
     }
-
-   
 
     @Transactional
     public boolean actualizarProducto(Producto producto) {
@@ -77,9 +77,11 @@ public class ProductoDao {
                 producto.getPrecio(), producto.getId_producto()) > 0;
     }
 
+    // ← MODIFICADO: Ahora desactiva en lugar de eliminar
     @Transactional
     public boolean eliminarProducto(int idProducto) {
-        return postgresTemplate.update("DELETE FROM productos WHERE id_producto = ?", idProducto) > 0;
+        String sql = "UPDATE productos SET activo = false WHERE id_producto = ?";
+        return postgresTemplate.update(sql, idProducto) > 0;
     }
     
     /**
@@ -102,7 +104,7 @@ public class ProductoDao {
     }
     
     /**
-     * Método para obtener todos los pedidos (para implementar la función en PedidoDao)
+     * Método para obtener todos los pedidos
      */
     public List<Pedido> obtenerTodosPedidos() {
         String sql = "SELECT p.id, p.id_cliente, u.nombre, p.fecha, p.total, p.estado " +
@@ -122,7 +124,7 @@ public class ProductoDao {
     }
     
     /**
-     * Método para obtener pedidos por estado (para implementar la función en PedidoDao)
+     * Método para obtener pedidos por estado
      */
     public List<Pedido> obtenerPedidosPorEstado(String estado) {
         String sql = "SELECT p.id, p.id_cliente, u.nombre, p.fecha, p.total, p.estado " +

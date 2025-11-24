@@ -6,18 +6,20 @@ public class Producto {
     private String descripcion;
     private double precio;
     private int id_proveedor;
+    private boolean activo; // ← NUEVO CAMPO
 
     // Constructor vacío
     public Producto() {
     }
 
-    // Constructor con parámetros
-    public Producto(int id_producto, String nombre, String descripcion, double precio, int id_proveedor) {
+    // Constructor con parámetros (actualizado)
+    public Producto(int id_producto, String nombre, String descripcion, double precio, int id_proveedor, boolean activo) {
         this.id_producto = id_producto;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.id_proveedor = id_proveedor;
+        this.activo = activo;
     }
 
     // Getters y setters
@@ -61,9 +63,18 @@ public class Producto {
         this.id_proveedor = id_proveedor;
     }
 
+    // ← NUEVO GETTER Y SETTER
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     @Override
     public String toString() {
         return "Producto [id_producto=" + id_producto + ", nombre=" + nombre + ", descripcion=" + descripcion
-                + ", precio=" + precio + ", id_proveedor=" + id_proveedor + "]";
+                + ", precio=" + precio + ", id_proveedor=" + id_proveedor + ", activo=" + activo + "]";
     }
 }

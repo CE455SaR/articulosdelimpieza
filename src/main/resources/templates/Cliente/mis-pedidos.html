@@ -1,61 +1,275 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Mis Pedidos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - BLEA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blea-primary: #00a8e8;
+            --blea-secondary: #00c9ff;
+            --blea-dark: #005f73;
+            --blea-light: #e0f7fa;
+        }
+        
+        body {
+            padding-top: 76px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-dark) 100%) !important;
+            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand-icon {
+            background: white;
+            color: var(--blea-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .btn-light {
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-light:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-outline-light {
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-light:hover {
+            transform: scale(1.05);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.15);
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 20px;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background: var(--blea-light);
+            color: var(--blea-dark);
+            font-weight: 600;
+            border: none;
+            padding: 15px;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s;
+        }
+        
+        .table tbody tr:hover {
+            background: var(--blea-light);
+            transform: scale(1.01);
+        }
+        
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blea-primary) 0%, var(--blea-secondary) 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--blea-primary);
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--blea-primary);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--blea-primary);
+            transform: scale(1.05);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--blea-light);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h4 {
+            color: var(--blea-dark);
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+        }
+        
+        .alert-danger {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background: #d1e7dd;
+            border-left: 4px solid #198754;
+            color: #0f5132;
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" th:href="@{/inicio}">Tienda de Abarrotes</a>
-            <div>
-                <a th:href="@{/cliente/catalogo}" class="btn btn-light me-2">Catálogo</a>
-                <a th:href="@{/carrito}" class="btn btn-light">Carrito</a>
+            <a class="navbar-brand" href="/inicio">
+                <div class="brand-icon">
+                    <i class="fas fa-spray-can"></i>
+                </div>
+                <span>BLEA</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cliente/catalogo">Catálogo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cliente/mis-pedidos">Mis Pedidos</a>
+                    </li>
+                </ul>
+                <a href="/carrito" class="btn btn-light ms-3">
+                    <i class="fas fa-shopping-cart me-1"></i>Carrito
+                </a>
+                <a href="/logout" class="btn btn-outline-light ms-2">
+                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                </a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h3>📋 Mis Pedidos</h3>
+        <!-- Card Principal -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-clipboard-list me-2"></i>Mis Pedidos</h3>
             </div>
             <div class="card-body">
-                <!-- Mostrar mensajes de error o éxito -->
-                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                
-                <!-- No hay pedidos -->
-                <div th:if="${#lists.isEmpty(pedidos)}" class="text-center py-5">
-                    <h4>No tienes pedidos realizados</h4>
-                    <a th:href="@{/cliente/catalogo}" class="btn btn-primary mt-3">Ir al catálogo</a>
+                <!-- Mensajes -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
                 
-                <!-- Lista de pedidos -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <!-- Estado Vacío -->
+                <div th:if="${#lists.isEmpty(pedidos)}" class="empty-state">
+                    <i class="fas fa-clipboard"></i>
+                    <h4>No tienes pedidos realizados</h4>
+                    <p class="text-muted mb-4">Empieza a comprar nuestros productos de limpieza</p>
+                    <a th:href="@{/cliente/catalogo}" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag me-2"></i>Ir al Catálogo
+                    </a>
+                </div>
+                
+                <!-- Tabla de Pedidos -->
                 <div th:if="${!#lists.isEmpty(pedidos)}" class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Número de Pedido</th>
-                                <th>Fecha</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th><i class="fas fa-hashtag me-2"></i>Número de Pedido</th>
+                                <th><i class="fas fa-calendar me-2"></i>Fecha</th>
+                                <th><i class="fas fa-dollar-sign me-2"></i>Total</th>
+                                <th><i class="fas fa-info-circle me-2"></i>Estado</th>
+                                <th><i class="fas fa-cog me-2"></i>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="pedido : ${pedidos}">
-                                <td th:text="${pedido.id}">123</td>
+                                <td><strong>#<span th:text="${pedido.id}">123</span></strong></td>
                                 <td th:text="${#dates.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
-                                <td>$<span th:text="${#numbers.formatDecimal(pedido.total, 1, 2)}">0.00</span></td>
+                                <td class="text-success">
+                                    <strong>$<span th:text="${#numbers.formatDecimal(pedido.total, 1, 2)}">0.00</span></strong>
+                                </td>
                                 <td>
                                     <span th:class="${pedido.estado == 'ENTREGADO' ? 'badge bg-success' : 
-                                                   (pedido.estado == 'EN_PROCESO' ? 'badge bg-warning' : 
+                                                   (pedido.estado == 'EN_PROCESO' ? 'badge bg-warning text-dark' : 
                                                    'badge bg-secondary')}"
                                           th:text="${pedido.estado}">Estado</span>
                                 </td>
                                 <td>
-                                    <a th:href="@{/cliente/pedidos/{id}/detalle(id=${pedido.id})}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+                                    <a th:href="@{/cliente/pedidos/{id}/detalle(id=${pedido.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>Ver Detalles
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
