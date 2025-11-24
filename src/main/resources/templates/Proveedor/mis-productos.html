@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Productos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-card {
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .empty-state {
+            padding: 60px 0;
+            text-align: center;
+        }
+        .btn-logout {
+            background-color: #fff;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar modificado con botón de cerrar sesión -->
+    <nav class="navbar navbar-dark bg-warning shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/inicio}">Tienda de Abarrotes</a>
+            <div class="d-flex">
+                <a th:href="@{/proveedor/mis-productos}" class="btn btn-light me-2">Mis Productos</a>
+                <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-light me-2">Agregar Producto</a>
+                <a href="http://localhost:8080/login" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="m-0"><i class="fas fa-boxes me-2"></i>Mis Productos</h2>
+            <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-warning">
+                <i class="fas fa-plus-circle me-2"></i>Agregar Nuevo Producto
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Estado vacío -->
+        <div th:if="${#lists.isEmpty(productos)}" class="empty-state">
+            <div class="card p-5 text-center">
+                <i class="fas fa-box-open text-warning mb-3" style="font-size: 60px;"></i>
+                <h3>Aún no tienes productos</h3>
+                <p class="text-muted">Comienza a agregar productos para vender en la tienda.</p>
+                <div class="mt-3">
+                    <a th:href="@{/proveedor/nuevo-producto}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Agregar Mi Primer Producto
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de productos -->
+        <div th:if="${!#lists.isEmpty(productos)}" class="row row-cols-1 row-cols-md-3 g-4">
+            <div th:each="producto : ${productos}" class="col">
+                <div class="card h-100 product-card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${producto.nombre}">Nombre del Producto</h5>
+                        <p class="card-text text-muted" th:text="${producto.descripcion}">Descripción del producto</p>
+                        <h6 class="card-subtitle mb-3 text-primary">$<span th:text="${#numbers.formatDecimal(producto.precio, 1, 2)}">0.00</span></h6>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a th:href="@{/proveedor/editar-producto/{id}(id=${producto.id_producto})}" class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-edit me-1"></i>Editar
+                        </a>
+                        <form th:action="@{/proveedor/eliminar-producto/{id}(id=${producto.id_producto})}" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                    onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                <i class="fas fa-trash-alt me-1"></i>Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Carrito</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/inicio}">Tienda de Abarrotes</a>
+            <a th:href="@{/cliente/catalogo}" class="btn btn-light">Seguir Comprando</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3>🛒 Tu Carrito</h3>
+            </div>
+            <div class="card-body">
+                <!-- Mostrar mensajes de error o éxito -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <!-- Carrito vacío -->
+                <div th:if="${#maps.isEmpty(items)}" class="text-center py-5">
+                    <h4>Tu carrito está vacío</h4>
+                    <a th:href="@{/cliente/catalogo}" class="btn btn-primary mt-3">Ver catálogo</a>
+                </div>
+                
+                <!-- Items del carrito -->
+                <div th:if="${!#maps.isEmpty(items)}">
+                    <div th:each="entry : ${items}" class="mb-3 border-bottom pb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <h5 th:text="${entry.key.nombre}"></h5>
+                                <p class="text-muted" th:text="${entry.key.descripcion}"></p>
+                            </div>
+                            <div class="col-md-2">
+                                <form th:action="@{/carrito/actualizar}" method="post" class="d-flex align-items-center">
+                                    <input type="hidden" name="idProducto" th:value="${entry.key.id_producto}">
+                                    <input type="number" name="cantidad" th:value="${entry.value}" min="1" 
+                                           class="form-control form-control-sm me-2" style="width: 70px;">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Actualizar</button>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+                                <p>Precio: $<span th:text="${#numbers.formatDecimal(entry.key.precio, 1, 2)}">0.00</span></p>
+                            </div>
+                            <div class="col-md-2">
+                                <p>Subtotal: $<span th:text="${#numbers.formatDecimal(entry.key.precio * entry.value, 1, 2)}">0.00</span></p>
+                            </div>
+                            <div class="col-md-1">
+                                <form th:action="@{/carrito/eliminar/{idProducto}(idProducto=${entry.key.id_producto})}" method="post">
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <form th:action="@{/carrito/vaciar}" method="post">
+                            <button type="submit" class="btn btn-outline-danger">Vaciar Carrito</button>
+                        </form>
+                        <div class="text-end">
+                            <h3>Total: $<span th:text="${#numbers.formatDecimal(total, 1, 2)}">0.00</span></h3>
+                            <a th:href="@{/checkout}" class="btn btn-success btn-lg mt-2">Finalizar Compra</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Para depuración
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateForms = document.querySelectorAll('form[action="/carrito/actualizar"]');
+            updateForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const idProducto = form.querySelector('input[name="idProducto"]').value;
+                    const cantidad = form.querySelector('input[name="cantidad"]').value;
+                    console.log('Enviando actualización: Producto ID=' + idProducto + ', Cantidad=' + cantidad);
+                });
+            });
+            
+            const deleteForms = document.querySelectorAll('form[action*="/carrito/eliminar/"]');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    console.log('Enviando eliminación: ' + form.action);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
